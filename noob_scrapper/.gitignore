@@ -1,4 +1,4 @@
-*.txt
+concept.txt
 Dockerfile
 bootstrap/
 bootstrap/*
