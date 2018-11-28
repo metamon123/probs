@@ -43,3 +43,13 @@ section.general {
 .pad-btm {
   padding-bottom: 8rem;
 }
+
+.ditto-no-overlay {
+  background-image: url("../img/ditto-wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  color: #fff;
+  height: 450px;
+  padding-top: 50px;
+}
