@@ -1,0 +1,4 @@
+*.txt
+Dockerfile
+bootstrap/
+bootstrap/*

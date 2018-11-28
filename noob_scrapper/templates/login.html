@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+<section class="general bg-light">
+  <div class="container">
+  <form action="/login" method="POST">
+    <div class="form-column">
+      <div class="form-group">
+        <label for="id">User ID</label>
+        <input type="text" class="form-control" name="id" placeholder="Enter your ID">
+      </div>
+      <!-- <div class="col-12 col-md-9 mb-2 mb-md-0"> -->
+      <div class="form-group">
+        <label for="pw">User password</label>
+        <input type="password" class="form-control" name="pw" placeholder="Password">
+      </div>
+      <div class="col-12 col-md-3 pad-top">
+        <button type="submit" class="btn btn-block btn-lg btn-primary">Login</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</section>
+{% endblock %}
