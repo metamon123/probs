@@ -1,5 +1,7 @@
 concept.txt
+__pycache__
 temp.py
 Dockerfile
 bootstrap/
 bootstrap/*
+*.db
