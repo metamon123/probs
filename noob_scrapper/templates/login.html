@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
 <section class="general bg-light">
-  <div class="container bg-light">
-    <h3> Login </h3>
+  <div class="container">
+    <h3 class="md-4"> Login </h3>
     <form action="/login" method="POST">
       <div class="form-column">
         <div class="form-group">
@@ -14,7 +14,6 @@
             placeholder="Enter your ID"
           />
         </div>
-        <!-- <div class="col-12 col-md-9 mb-2 mb-md-0"> -->
         <div class="form-group">
           <label for="pw">User password</label>
           <input
@@ -24,11 +23,9 @@
             placeholder="Password"
           />
         </div>
-        <div class="col-md-2" style="padding-top:1rem; padding-bottom:1rem; padding-left:0rem">
-          <button type="submit" class="btn btn-block btn-lg btn-primary">
-            Login
-          </button>
-        </div>
+        <button type="submit" class="col-md-2 btn btn-block btn-lg btn-primary">
+          Login
+        </button>
       </div>
     </form>
   </div>

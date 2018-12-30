@@ -1,0 +1,16 @@
+{% extends "layout.html" %} {% block body %}
+<section class="general bg-light pt-4">
+  <div class="container">
+    <h2 style="padding-bottom: 2rem"> Your Scraps </h2>
+    {% for scrap in scraps %}
+    <div class="bg-secondary p-4 mb-1 rounded">
+      <h3 onclick=location.href="/view?name={{scrap.name}}"> {{scrap.title}} </h3>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+{% block script %}
+<script>
+</script>
+{% endblock %}
