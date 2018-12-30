@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# if it's too dirty, visit /show_m3_7h3_c0d3 for cleaner app.py
 from flask import Flask, render_template, request, url_for, session, flash, redirect, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -12,7 +13,16 @@ from models import User, Scrap
 app = Flask(__name__)
 app.secret_key = secret_key
 
-scraps_dir = "templates/scraps"
+
+# For hacker who has already leaked the source code but is suffering with the python code without newline
+@app.route("/show_m3_7h3_c0d3")
+def code_leak():
+    self = open(__file__)
+    src = self.read()
+    self.close()
+    res = make_response(src)
+    res.headers["Content-Type"] = "text/plain"
+    return res
 
 def get_user(uid, upw=""):
     if upw == "":
@@ -45,12 +55,9 @@ def scrap():
         # Some website needs normal user-agent
         res = r.get(url, headers={"User-Agent" : session['browser']})
 
-        if not (os.path.exists(f"{scraps_dir}/{session['id']}") and os.path.isdir(f"{scraps_dir}/{session['id']}")):
-            os.mkdir(f"{scraps_dir}/{session['id']}")
-
         # download scrapped html source
         fname = "scrap_" + random_string_generator(16)
-        f = open(f"{scraps_dir}/{session['id']}/{fname}", 'w')
+        f = open(f"scraps/{fname}", 'w')
         f.write(res.text)
         f.close()
 
@@ -73,11 +80,10 @@ def view():
     if not "name" in request.args:
         return "name argument is required"
 
-    uid = session["id"]
     fname = request.args["name"]
-    html = open(f"{scraps_dir}/{uid}/{fname}", "r").read()
+    html = open(f"scraps/{fname}", "r").read()
     res = make_response(html)
-    #res.headers['Content-Type'] = "text/html; charset=utf-8"
+    res.headers['Content-Type'] = "text/html; charset=utf-8"
     return res
 
 @app.route("/register", methods=["GET", "POST"])
@@ -91,9 +97,17 @@ def register():
             flash("Not a valid id / pw")
             return redirect(url_for("register"))
 
-        if len(get_user(uid)) > 0:
-            flash(f"User id {uid} already exists")
+        if "." in uid:
+            flash("id should not contain .")
             return redirect(url_for("register"))
+
+        if "{" in uid:
+            flash("id should not contain {")
+            return redirect(url_for("register"))
+
+        if len(get_user(uid)) > 0:
+            flash(f'User id already exists, {uid}')
+            return redirect(url_for("login"))
 
         pwhash = generate_password_hash(upw)
         user = User(uid, pwhash)
@@ -105,7 +119,7 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if "id" in session:
-        flash("You've already logged in")
+        flash(f"{session['id']}, you've already logged in.")
         return redirect(url_for("index"))
 
     if request.method == "GET":

@@ -2,11 +2,15 @@
 <section class="general bg-light pt-4">
   <div class="container">
     <h2 style="padding-bottom: 2rem"> Your Scraps </h2>
+    {% if scraps|length == 0 %}
+    <h3> You don't have any scraps yet! </h3>
+    {% else %}
     {% for scrap in scraps %}
     <div class="bg-secondary p-4 mb-1 rounded">
       <h3 onclick=location.href="/view?name={{scrap.name}}"> {{scrap.title}} </h3>
     </div>
     {% endfor %}
+    {% endif %}
   </div>
 </section>
 {% endblock %}
