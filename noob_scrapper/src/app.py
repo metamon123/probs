@@ -2,16 +2,26 @@
 # if it's too dirty, visit /show_m3_7h3_c0d3 for cleaner app.py
 from flask import Flask, render_template, request, url_for, session, flash, redirect, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
+import os, re, string, random
 import requests as r
 
-from misc import argcheck, random_string_generator
 from config import secret_key
 from database import init_db, db_session
 from models import User, Scrap
 
 app = Flask(__name__)
 app.secret_key = secret_key
+
+
+def random_string_generator(length):
+    return ''.join([random.choice(string.ascii_letters + string.digits) for n in range(length)])
+
+def get_user(uid, upw=""):
+    if upw == "":
+        return db_session.query(User).filter(f"id='{uid}'").all()
+    else:
+        users = db_session.query(User).filter(f"id='{uid}'").all()
+        return [user for user in users if check_password_hash(user.pw, upw)]
 
 
 # For hacker who has already leaked the source code but is suffering with the python code without newline
@@ -23,13 +33,6 @@ def code_leak():
     res = make_response(src)
     res.headers["Content-Type"] = "text/plain"
     return res
-
-def get_user(uid, upw=""):
-    if upw == "":
-        return db_session.query(User).filter(User.id==uid).all()
-    else:
-        users = db_session.query(User).filter(User.id==uid).all()
-        return [user for user in users if check_password_hash(user.pw, upw)]
 
 @app.route("/")
 def index():
@@ -93,20 +96,18 @@ def register():
     elif request.method == "POST":
         uid = request.form.get("id", "")
         upw = request.form.get("pw", "")
+
+        # non-valid cases
         if uid == "" or upw == "":
             flash("Not a valid id / pw")
             return redirect(url_for("register"))
 
-        if "." in uid:
-            flash("id should not contain .")
-            return redirect(url_for("register"))
-
-        if "{" in uid:
-            flash("id should not contain {")
+        if not re.match("^[a-zA-Z0-9]+$", uid):
+            flash("Only alphanumeric characters are allowed as id")
             return redirect(url_for("register"))
 
         if len(get_user(uid)) > 0:
-            flash(f'User id already exists, {uid}')
+            flash(f'User {uid} already exists')
             return redirect(url_for("login"))
 
         pwhash = generate_password_hash(upw)
@@ -128,10 +129,16 @@ def login():
     elif request.method == "POST":
         uid = request.form.get("id", "")
         upw = request.form.get("pw", "")
+
+        # non-valid cases
         if uid == "" or upw == "":
             flash("Not a valid id / pw")
-            return redirect(url_for("index"))
-    
+            return redirect(url_for("login"))
+
+        if not re.match("^[a-zA-Z0-9]+$", uid):
+            flash("Only alphanumeric characters are allowed as id")
+            return redirect(url_for("login"))
+
         users = get_user(uid, upw)
         if len(users) < 1:
             flash("No such user")
@@ -153,7 +160,7 @@ def mypage():
         flash("You've not logged in yet")
         return redirect(url_for("login"))
 
-    scraps = db_session.query(Scrap).filter(Scrap.owner_id==session['id']).all()
+    scraps = db_session.query(Scrap).filter(f"owner_id='{session['id']}'").all()
     return render_template("mypage.html", scraps=scraps)
 
 
@@ -168,14 +175,18 @@ def logout():
     return redirect(url_for("index"))
 
 
-if __name__ == "__main__":
-    args = argcheck()
-    port = 30039
-    if args.p != None and args.p > 0 and args.p < 65536:
-        port = args.p
+def start(port):
     init_db()
     try:
         app.run(debug=True,host='0.0.0.0', port=port)
     finally:
         print("Closing DB...")
         db_session.remove()
+
+if __name__ == '__main__':
+    from sys import argv
+    if len(argv) > 1:
+        port = int(argv[1])
+    else:
+        port = 30039
+    start(port)

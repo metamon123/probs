@@ -4,11 +4,11 @@ from database import Base
 class User(Base):
     __tablename__ = 'Users'
     _id = Column(Integer, primary_key=True)
-    id = Column(String(16))
+    id = Column(String, unique=True)
     pw = Column(String)
 
     def __init__(self, id, pw):
-        self.id = id[:16]
+        self.id = id
         self.pw = pw
 
     def __repr__(self):
@@ -17,7 +17,7 @@ class User(Base):
 class Scrap(Base):
     __tablename__ = "Scraps"
     _id = Column(Integer, primary_key=True)
-    owner_id = Column(String(16))
+    owner_id = Column(String)
     name = Column(String)
     title = Column(String)
 
