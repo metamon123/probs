@@ -57,22 +57,22 @@ def scrap():
     try:
         # Some website needs normal user-agent
         res = r.get(url, headers={"User-Agent" : session['browser']})
-
-        # download scrapped html source
-        fname = "scrap_" + random_string_generator(16)
-        f = open(f"scraps/{fname}", 'w')
-        f.write(res.text)
-        f.close()
-
-        scrap = Scrap(session["id"], fname, title)
-        db_session.add(scrap)
-        db_session.commit()
-
-        flash(f"Your scrap is stored successfully")
-        return redirect(url_for("index"))
     except:
         flash("Not a good url... hmm...")
         return redirect(url_for("index"))
+
+    # download scrapped html source
+    fname = "scrap_" + random_string_generator(16)
+    f = open(f"scraps/{fname}", 'w', encoding='utf-8')
+    f.write(res.text)
+    f.close()
+
+    scrap = Scrap(session["id"], fname, title)
+    db_session.add(scrap)
+    db_session.commit()
+
+    flash(f"Your scrap is stored successfully")
+    return redirect(url_for("index"))
 
 @app.route("/view", methods=["GET"])
 def view():
@@ -84,7 +84,7 @@ def view():
         return "name argument is required"
 
     fname = request.args["name"]
-    html = open(f"scraps/{fname}", "r").read()
+    html = open(f"scraps/{fname}", "r", encoding='utf-8').read()
     res = make_response(html)
     res.headers['Content-Type'] = "text/html; charset=utf-8"
     return res
