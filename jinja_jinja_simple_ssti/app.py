@@ -8,9 +8,11 @@ def index():
     template = request.args.get("t", "")
     if template == "":
         return "Visit /source for original source file"
+
+    # I heard that every server-side template injection payloads contain {{, so I banned it :)
     if "{{" in template:
         return "No Hack"
-        #pass
+
     return render_template_string(template)
 
 @app.route("/source")
