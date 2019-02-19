@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+{% macro render_field(field) %}
+  {{ field.label }}
+  {{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+<div class="row">
+<form class="col s12" action="/account/login" method="POST">
+  {{ form.hidden_tag() }}
+  <div class="row">
+    <div class="input-field col s12">
+      {{ render_field(form.uid) }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12">
+      {{ render_field(form.upw) }}
+    </div>
+  </div>
+  <button class="btn waves-effect waves-light" type="submit" name="register"><i class="material-icons right">send</i>login</button>
+</form>
+</div>
+{% endblock %}
