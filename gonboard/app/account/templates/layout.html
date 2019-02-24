@@ -13,8 +13,8 @@
       <div class="row">
         <nav>
           <div class="nav-wrapper">
-            <a href="/" class="brand-logo" style="margin-left: 1em">GoNBoard</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <a href="/" class="brand-logo hide-on-med-and-down">&nbsp;GoNBoard</a>
+            <ul id="nav-mobile" class="right">
               <li><a href="/account/register">register</a></li>
               {% if current_user.is_authenticated %}
               <li><a href="/account/mypage">{{ current_user.uid }}</a></li>

@@ -12,14 +12,10 @@ from custom_config import db_uri
 app = Flask(__name__)
 app.config.from_pyfile("../flask_config.py")
 
-@app.route("/")
-def index():
-    return "Not implemeted... Please visit /account"
 
 # -- login_manager --
 
 login_manager = LoginManager(app)
-
 
 # -- database --
 
@@ -45,3 +41,12 @@ def init_db():
   # from board import models
   Base.metadata.create_all(engine)
 
+
+@app.route("/")
+def index():
+    return "Not implemeted... Please visit /account"
+
+
+@app.teardown_request
+def remove_session(exception=None):
+    db_session.remove()

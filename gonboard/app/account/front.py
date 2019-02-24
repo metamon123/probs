@@ -1,15 +1,16 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from flask_login import login_required, login_user, logout_user, current_user
 from .models import User
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, MypageForm
 from app import login_manager, db_session
 
 account_bp = Blueprint("account", __name__, template_folder='templates')
+login_manager.login_view = "account.login"
 
 
 @login_manager.user_loader
 def load_user(uid):
-    return User.query.get(uid)
+    return User.query.filter_by(uid=uid).first()
 
 
 @account_bp.route("/")
@@ -44,6 +45,7 @@ def login():
             return f"No such user : {user.uid}"
         if not user.check_password(form.upw.data):
             return f"Wrong password"
+        print(f"login success, {user.uid}")
         login_user(user)
         return redirect(request.args.get('next') or url_for('account.index'))
     return render_template("login.html", form=form)
@@ -59,4 +61,9 @@ def logout():
 @account_bp.route("/mypage", methods=['GET', 'POST'])
 @login_required
 def mypage():
-    pass
+    form = MypageForm(request.form)
+    if request.method == 'POST' and form.validate():
+        # change password if new_upw is not empty
+        # change msg if changed
+        pass
+    return render_template("mypage.html", form=form)

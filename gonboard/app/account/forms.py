@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import TextField, PasswordField
 from wtforms import validators
 
@@ -11,7 +11,7 @@ _upw = PasswordField("User password", [
 ])
 
 
-class RegisterForm(Form):
+class RegisterForm(FlaskForm):
     uid = _uid
     upw = _upw
     msg = TextField("Message to others")
@@ -21,6 +21,14 @@ class RegisterForm(Form):
     ])
 
 
-class LoginForm(Form):
+class MypageForm(FlaskForm):
+    msg = TextField("Message to others")
+    new_upw = PasswordField("New password (Optional)") # can be empty
+    confirm = PasswordField("Confirm new password (Optional)", [
+        validators.EqualTo('new_upw', message='Password does not match')
+    ])
+
+
+class LoginForm(FlaskForm):
     uid = _uid
     upw = _upw
