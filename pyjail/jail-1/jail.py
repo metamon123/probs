@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-class runner(object):
+class jail():
     def __init__(self):
         self.blacklist = []
     def run_file(self, filename):
@@ -24,8 +24,7 @@ class runner(object):
             self.blacklist.extend(list(blacklist))
 
 
-r = runner()
-
+r = jail()
 r.add_blacklist('()=')
 opt = raw_input("run file (f) / run code (c) : ")
 if opt == 'c':
