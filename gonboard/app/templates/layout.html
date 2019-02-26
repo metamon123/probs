@@ -1,5 +1,25 @@
+{% macro render_field(field) %}
+  {{ field.label }}
+  {{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <title>GoNBoard</title>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <script>
+        {% for message in messages %} alert("{{ message }}"); {% endfor %}
+      </script>
+      {% endif %}
+    {% endwith %}
 		<!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 

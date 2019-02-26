@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
 from .models import User
 from .forms import RegisterForm, LoginForm, MypageForm
@@ -30,9 +30,10 @@ def register():
                     form.msg.data, form.email.data)
         db_session.add(user)
         db_session.commit()
-        msg = f"Successfully registered, {user.uid}"
+        msg = f"register success, {user.uid}"
         print(msg)
-        return msg
+        flash(msg)
+        return redirect(request.args.get('next') or url_for('account.index'))
     return render_template('register.html', form=form)
 
 
@@ -40,20 +41,27 @@ def register():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
+        msg = ""
         user = User.query.filter_by(uid=form.uid.data).first()
         if user is None:
-            return f"No such user : {user.uid}"
+            msg = f"No such user : {user.uid}"
         if not user.check_password(form.upw.data):
-            return f"Wrong password"
-        print(f"login success, {user.uid}")
-        login_user(user)
-        return redirect(request.args.get('next') or url_for('account.index'))
+            msg = f"Wrong password"
+        if msg == "":
+            msg = f"login success, {user.uid}"
+            print(msg)
+            flash(msg)            
+            login_user(user)
+            return redirect(request.args.get('next') or url_for('account.index'))
+        flash(msg)
+        return redirect(request.args.get('next') or url_for('account.login'))
     return render_template("login.html", form=form)
 
 
 @account_bp.route("/logout", methods=['GET'])
 @login_required
 def logout():
+    flash("logout success")
     logout_user()
     return redirect(request.args.get('next') or url_for('account.login'))
 
@@ -63,7 +71,11 @@ def logout():
 def mypage():
     form = MypageForm(request.form)
     if request.method == 'POST' and form.validate():
-        # change password if new_upw is not empty
-        # change msg if changed
-        pass
+        if form.new_upw.data != "":
+            current_user.set_password(form.new_upw.data)
+        if form.msg.data != current_user.msg:
+            current_user.msg = form.msg.data
+        db_session.commit()
+        flash("update success")
+        return redirect(request.args.get('next') or url_for('account.index'))
     return render_template("mypage.html", form=form)

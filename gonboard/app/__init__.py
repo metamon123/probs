@@ -31,10 +31,10 @@ Base.query = db_session.query_property()
 # -- blueprint --
 
 from .account.front import account_bp
+from .board.front import board_bp
 app.register_blueprint(account_bp, url_prefix="/account")
+app.register_blueprint(board_bp)
 
-# from .board.front import board_bp
-# app.register_blueprint(board_bp)
 
 def init_db():
   from .account import models

@@ -1,16 +1,5 @@
 {% extends "layout.html" %}
 {% block body %}
-{% macro render_field(field) %}
-  {{ field.label }}
-  {{ field(**kwargs)|safe }}
-  {% if field.errors %}
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endmacro %}
 <div class="row">
 <div class="col s12">
     <h4 class="center-align">Hello, {{ current_user.uid }}({{ current_user.email }})</h4>
