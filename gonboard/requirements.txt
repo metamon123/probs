@@ -12,5 +12,5 @@ mccabe==0.6.1
 pycodestyle==2.5.0
 pyflakes==2.1.0
 SQLAlchemy==1.2.18
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 WTForms==2.2.1
